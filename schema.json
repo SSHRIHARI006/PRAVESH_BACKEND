@@ -1,0 +1,47 @@
+{
+  "User": {
+    "id": "integer (PK)",
+    "bt_id": "string, unique",
+    "email": "string, unique",
+    "password": "string",
+    "name": "string",
+    "phone": "string",
+    "gender" : "male/female",
+    "Hostel_room_no" : "int if hostel user",
+    "is_hostel_user" : "boolean",
+    "is_admin" : "boolean"
+  },
+  "log_same_day" : {
+    "index" : "int",
+    "QR_ID" : "string",
+    "user_id" : "int",
+    "Bt_id" : "string",
+    "phone" : "string",
+    "name" : "string",
+    "entry_timestamp" : "datetime",
+    "exit_timestamp" : "datetime",
+    "is_exit" : "boolean",
+    "is_hostel_user" : "boolean",
+    "hostel_room_no" : "int",
+    "reason_for_exit" : "string"
+  },
+
+  "log_leave" : {
+    "index" : "int",
+    "QR_ID" : "string",
+    "user_id" : "int",
+    "Bt_id" : "string",
+    "phone" : "string",
+    "name" : "string",
+    "entry_timestamp" : "datetime",
+    "exit_timestamp" : "datetime",
+    "no_of_days" : "int",
+    "additional_contact_info" : "string",
+    "intended_location" : "string",
+    "intended_return_date" : "datetime",
+    "is_exit" : "boolean",
+    "is_hostel_user" : "boolean",
+    "hostel_room_no" : "int",
+    "reason_for_exit" : "string"
+  }
+}
