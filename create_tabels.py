@@ -1,6 +1,10 @@
-from app.db.session import engine
-from app.db.base import Base
+# create_tables.py
 
-if __name__ == "__main__":
-    Base.metadata.create_all(bind=engine)
-    print("✅ Tables created successfully!")
+from app.db.models import SQLModel
+from app.db.session import engine
+
+print("Connecting to DB...")
+
+SQLModel.metadata.create_all(bind=engine)
+
+print("DB connection successful!")
