@@ -88,3 +88,28 @@ async def create_night_pass(session: AsyncSession, user_id: str) -> None:
     )
     session.add(new_leave)
     await session.commit()
+
+
+async def get_log_leave_by_qr_id(session: AsyncSession, qr_id: str) -> LogLeave | None:
+    result = await session.execute(
+        select(LogLeave).where(LogLeave.QR_ID == qr_id)
+    )
+    return result.scalar_one_or_none()
+
+async def get_all_log_leave(session: AsyncSession) -> list[LogLeave]:
+    result = await session.execute(
+        select(LogLeave)
+    )
+    return result.scalars().all()
+
+async def update_log_leave(session: AsyncSession, qr_id: str, updates: dict) -> LogLeave | None:
+    log = await get_log_leave_by_qr_id(session, qr_id)
+    if not log:
+        return None
+
+    for key, value in updates.items():
+        setattr(log, key, value)
+
+    await session.commit()
+    await session.refresh(log)
+    return log

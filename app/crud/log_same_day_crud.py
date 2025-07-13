@@ -101,3 +101,36 @@ async def close_log_entry(session: AsyncSession, user_id: str) -> None:
         )
         await session.execute(upd)
         await session.commit()
+
+
+async def get_log_same_day_by_qr_id(session: AsyncSession, qr_id: str) -> LogSameDay | None:
+    result = await session.execute(
+        select(LogSameDay).where(LogSameDay.QR_ID == qr_id)
+    )
+    return result.scalar_one_or_none()
+
+# -------------------------------------------------------
+# GET ALL
+# -------------------------------------------------------
+
+async def get_all_log_same_day(session: AsyncSession) -> list[LogSameDay]:
+    result = await session.execute(
+        select(LogSameDay)
+    )
+    return result.scalars().all()
+
+# -------------------------------------------------------
+# UPDATE
+# -------------------------------------------------------
+
+async def update_log_same_day(session: AsyncSession, qr_id: str, updates: dict) -> LogSameDay | None:
+    log = await get_log_same_day_by_qr_id(session, qr_id)
+    if not log:
+        return None
+
+    for key, value in updates.items():
+        setattr(log, key, value)
+
+    await session.commit()
+    await session.refresh(log)
+    return log

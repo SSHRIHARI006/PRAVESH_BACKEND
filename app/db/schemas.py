@@ -1,8 +1,9 @@
 # app/db/schemas.py
 
-from pydantic import BaseModel
+from pydantic import BaseModel,EmailStr
 from typing import Optional
 from datetime import datetime
+
 
 class LogCreate(BaseModel):
     user_id: int
@@ -32,3 +33,31 @@ class LogLeaveCreate(BaseModel):
     hostel_room_no: Optional[int] = None
     reason_for_exit: Optional[str] = None
     QR_ID: Optional[str] = None
+
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+    name: str
+    phone: str
+    gender: str
+    bt_id: str
+    hostel_room_no: int | None = None
+    is_hostel_user: bool = False
+    is_admin: bool = False
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+class TokenData(BaseModel):
+    user_id: int | None = None
+    is_admin: bool = False
+
+class QRPayload(BaseModel):
+    encrypted_data: str
+    scan_type: str

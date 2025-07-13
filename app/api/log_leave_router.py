@@ -1,0 +1,48 @@
+# app/api/log_leave_router.py
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from app.db.database import get_db
+from app.db.models import LogLeave
+from app.crud.log_leave_crud import (
+    create_log_leave,
+    get_log_leave_by_qr_id,
+    get_all_log_leave,
+    update_log_leave,
+    delete_log_leave,
+)
+from typing import List
+
+router = APIRouter(
+    prefix="/logs/leave",
+    tags=["LogLeave"],
+)
+
+@router.post("/", response_model=LogLeave)
+def create_log(log: LogLeave, db: Session = Depends(get_db)):
+    return create_log_leave(db, log)
+
+@router.get("/", response_model=List[LogLeave])
+def read_logs(db: Session = Depends(get_db)):
+    return get_all_log_leave(db)
+
+@router.get("/{qr_id}", response_model=LogLeave)
+def read_log(qr_id: str, db: Session = Depends(get_db)):
+    log = get_log_leave_by_qr_id(db, qr_id)
+    if not log:
+        raise HTTPException(status_code=404, detail="Log not found")
+    return log
+
+@router.put("/{qr_id}", response_model=LogLeave)
+def update_log(qr_id: str, updates: dict, db: Session = Depends(get_db)):
+    updated = update_log_leave(db, qr_id, updates)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Log not found")
+    return updated
+
+@router.delete("/{qr_id}")
+def delete_log(qr_id: str, db: Session = Depends(get_db)):
+    result = delete_log_leave(db, qr_id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Log not found")
+    return {"message": "Log deleted successfully"}

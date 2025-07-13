@@ -4,12 +4,27 @@
 
 from sqlalchemy.orm import Session
 from app.db.models import User
+from app.db.schemas import UserCreate
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.core.auth import get_password_hash
 
-def create_user(db : Session, user :User):
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
+async def create_user(session: AsyncSession, user_data: UserCreate):
+    hashed_password = get_password_hash(user_data.password)
+    new_user = User(
+        email=user_data.email,
+        password=hashed_password,
+        name=user_data.name,
+        phone=user_data.phone,
+        gender=user_data.gender,
+        bt_id=user_data.bt_id,
+        hostel_room_no=user_data.hostel_room_no,
+        is_hostel_user=user_data.is_hostel_user,
+        is_admin=user_data.is_admin
+    )
+    session.add(new_user)
+    await session.commit()
+    return new_user
+
 
 # fetching user
 
